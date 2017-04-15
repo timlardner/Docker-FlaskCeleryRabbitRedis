@@ -28,13 +28,92 @@ The finished project structure will be as follows:
 	    - run_celery.sh
 	    - run_web.sh
 
-## Part 2 - Creating the Flask application
+## [Part 2 - Creating the Flask application](https://github.com/timlardner/Docker-FlaskCeleryRabbitRedis/tree/readme#part-2---creating-the-flask-application)
 
-First we create an folder for our app.
+First we create an folder for our app. For this example, our folder is simply called `app`. Within this folder, create an `app.py` file and an empty folder named `templates` where our HTML templates will be stored.
 
-## Part 3 - Expanding our web app to use Celery
+For our app, we first include some basic Flask libraries and create an instance of the app:
 
-## Part 4 - Using Docker to package our application
+```
+from flask import Flask, request
+from flask import render_template, make_response
+
+APP = Flask(__name__)
+```
+
+We define three routes for Flask to implement: a landing page, a secondary page that embeds and image, and a route for the image itself. Our image route generates an image dynamically. For this example, it generates a plot using `matplotlib` and some delays are also included so that the time taken to create the image is more apparent.
+
+```
+@APP.route('/')
+def index():
+    return render_template('index.html')
+```
+
+```
+@APP.route('/image_page')
+def image_page():
+    job = tasks.get_data_from_strava.delay()
+    return render_template('home.html')
+```
+
+```
+@APP.route('/result.png')
+def result():
+	import time
+	import random
+    import datetime
+    from io import BytesIO
+    from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+	from matplotlib.figure import Figure
+	from matplotlib.dates import DateFormatter
+
+	time.sleep(2)
+    fig = Figure()
+    ax_handle = fig.add_subplot(111)
+    x_axis = []
+    y_axis = []
+    now = datetime.datetime.now()
+    delta = datetime.timedelta(days=1)
+    current_task.update_state(state='PROGRESS', meta={'current':0.5})
+    for _ in range(10):
+        x_axis.append(now)
+        now += delta
+        y_axis.append(random.randint(0, 1000))
+    ax_handle.plot_date(x_axis, y_axis, '-')
+    ax_handle.xaxis.set_major_formatter(DateFormatter('%Y-%m-%d'))
+    fig.autofmt_xdate()
+    canvas = FigureCanvas(fig)
+    current_task.update_state(state='PROGRESS', meta={'current':0.8})
+    png_output = BytesIO()
+    canvas.print_png(png_output)
+    out = png_output.getvalue()
+    response = make_response(out)
+    response.headers['Content-Type'] = 'image/png'
+    return response
+```
+
+Next, we need to open our `templates` folder and create the following two templates:
+
+#### home.html
+```
+<a href="{{ url_for('.image_page') }}">Whatever you click to get data from Strava...</a>
+```
+
+#### index.html
+```
+<div id="imgpl"><img src="result.png"></div>
+```
+
+If we add the following code then run the script, we can load up our webpage and test the image generation.
+
+```
+if __name__ == '__main__':
+    APP.run(host='0.0.0.0')
+``` 
+
+## [Part 3 - Expanding our web app to use Celery](https://github.com/timlardner/Docker-FlaskCeleryRabbitRedis/tree/readme#part-3---expanding-our-web-app-to-use-celery)
+
+## [Part 4 - Using Docker to package our application](https://github.com/timlardner/Docker-FlaskCeleryRabbitRedis/tree/readme#part-4---using-docker-to-package-our-application)
 
 Our app requires 4 separate containers for each of our servies:
 * Flask
