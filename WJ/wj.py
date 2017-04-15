@@ -18,25 +18,8 @@ from flask import Blueprint, make_response, abort
 from celery import Celery, current_task
 from celery.result import AsyncResult
 
-# Get backend info from environment variables
-REDIS_PORT = 6379  
-REDIS_DB = 0  
-REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR', 'redis')
-REDIS_URL = 'redis://%s:%d/%d' % (REDIS_HOST, REDIS_PORT, REDIS_DB)
-
-# Get broker info from environment variables
-RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
-if RABBIT_HOSTNAME.startswith('tcp://'):  
-    RABBIT_HOSTNAME = RABBIT_HOSTNAME.split('//')[1]
-BROKER_URL = os.environ.get('BROKER_URL','')
-if not BROKER_URL:  
-    BROKER_URL = 'amqp://{user}:{password}@{hostname}/{vhost}/'.format(
-        user=os.environ.get('RABBIT_ENV_USER', 'admin'),
-        password=os.environ.get('RABBIT_ENV_RABBITMQ_PASS', 'mypass'),
-        hostname='rabbit',
-        vhost=os.environ.get('RABBIT_ENV_VHOST', ''))
-
-print(BROKER_URL)
+REDIS_URL = 'redis://redis:6379/0' 
+BROKER_URL = 'amqp://admin:mypass@rabbit//'
 
 app = Flask(__name__)
 celery = Celery(app.name,
