@@ -34,7 +34,7 @@ First we create an folder for our app. For this example, our folder is simply ca
 
 For our app, we first include some basic Flask libraries and create an instance of the app:
 
-```
+```python
 from flask import Flask, request
 from flask import render_template, make_response
 
@@ -43,20 +43,20 @@ APP = Flask(__name__)
 
 We define three routes for Flask to implement: a landing page, a secondary page that embeds and image, and a route for the image itself. Our image route generates an image dynamically. For this example, it generates a plot using `matplotlib` and some delays are also included so that the time taken to create the image is more apparent.
 
-```
+```python
 @APP.route('/')
 def index():
     return render_template('index.html')
 ```
 
-```
+```python
 @APP.route('/image_page')
 def image_page():
     job = tasks.get_data_from_strava.delay()
     return render_template('home.html')
 ```
 
-```
+```python
 @APP.route('/result.png')
 def result():
 	import time
@@ -95,7 +95,7 @@ def result():
 Next, we need to open our `templates` folder and create the following two templates:
 
 #### home.html
-```
+```html
 <a href="{{ url_for('.image_page') }}">Whatever you click to get data from Strava...</a>
 ```
 
@@ -127,7 +127,7 @@ Docker provides prebuilt containers for [RabbitMQ](https://hub.docker.com/_/rabb
 
 For Flask and Celery, we'll build two identical containers from a simple `Dockerfile`.
 
-```
+```bash
 # Pull the latest version of the Python container.
 FROM python:latest
 
