@@ -12,21 +12,22 @@ This tutorial explains how to configure Flask, Celery, RabbitMQ and Redis, toget
 ## Part 1 - Project Structure
 
 The finished project structure will be as follows:
-
-- Project Root
-	- README.md
-	- requirements.txt
-	- Dockerfile
-	- docker-compose.yml
-	- app
-	    - templates
-	        - home.html
-	        - index.hmtl
-	    - app.py
-	    - tasks.py
-	- scripts
-	    - run_celery.sh
-	    - run_web.sh
+```
+.
+├── Dockerfile
+├── docker-compose.yml
+├── README.md
+├── app
+│   ├── app.py
+│	├── tasks.py
+│   └── templates
+│       ├── home.html
+│       └── index.html
+├── scripts
+│   ├── run_celery.sh
+│   └── run_web.sh
+└── requirements.txt
+```
 
 ## Part 2 - Creating the Flask application
 
