@@ -100,13 +100,13 @@ Next, we need to open our `templates` folder and create the following two templa
 ```
 
 #### index.html
-```
+```html
 <div id="imgpl"><img src="result.png"></div>
 ```
 
 If we add the following code then run the script, we can load up our webpage and test the image generation.
 
-```
+```python
 if __name__ == '__main__':
     APP.run(host='0.0.0.0')
 ``` 
