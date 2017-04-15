@@ -19,7 +19,7 @@ The finished project structure will be as follows:
 ├── README.md
 ├── app
 │   ├── app.py
-│	├── tasks.py
+│   ├── tasks.py
 │   └── templates
 │       ├── home.html
 │       └── index.html
