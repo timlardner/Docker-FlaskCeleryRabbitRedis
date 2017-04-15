@@ -5,9 +5,9 @@ This tutorial explains how to configure Flask, Celery, RabbitMQ and Redis, toget
 ## Contents
 
 1. [Part 1 - Project Structure](https://github.com/timlardner/Docker-FlaskCeleryRabbitRedis/tree/readme#part-1---project-structure)
-1. Part 2 - Creating the Flask application
-1. Part 3 - Expanding our web app to use Celery
-1. Part 4 - Using Docker to package our application
+1. [Part 2 - Creating the Flask application](https://github.com/timlardner/Docker-FlaskCeleryRabbitRedis/tree/readme#part-2---creating-the-flask-application)
+1. [Part 3 - Expanding our web app to use Celery](https://github.com/timlardner/Docker-FlaskCeleryRabbitRedis/tree/readme#part-3---expanding-our-web-app-to-use-celery)
+1. [Part 4 - Using Docker to package our application](https://github.com/timlardner/Docker-FlaskCeleryRabbitRedis/tree/readme#part-4---using-docker-to-package-our-application)
 
 ## Part 1 - Project Structure
 
@@ -28,7 +28,7 @@ The finished project structure will be as follows:
 	    - run_celery.sh
 	    - run_web.sh
 
-## [Part 2 - Creating the Flask application](https://github.com/timlardner/Docker-FlaskCeleryRabbitRedis/tree/readme#part-2---creating-the-flask-application)
+## Part 2 - Creating the Flask application
 
 First we create an folder for our app. For this example, our folder is simply called `app`. Within this folder, create an `app.py` file and an empty folder named `templates` where our HTML templates will be stored.
 
@@ -111,9 +111,11 @@ if __name__ == '__main__':
     APP.run(host='0.0.0.0')
 ``` 
 
-## [Part 3 - Expanding our web app to use Celery](https://github.com/timlardner/Docker-FlaskCeleryRabbitRedis/tree/readme#part-3---expanding-our-web-app-to-use-celery)
+We see that our page load takes a while to complete because the request to `result.png` doesn't return until the image generation has completed.
 
-## [Part 4 - Using Docker to package our application](https://github.com/timlardner/Docker-FlaskCeleryRabbitRedis/tree/readme#part-4---using-docker-to-package-our-application)
+## Part 3 - Expanding our web app to use Celery
+
+## Part 4 - Using Docker to package our application
 
 Our app requires 4 separate containers for each of our servies:
 * Flask
