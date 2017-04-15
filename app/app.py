@@ -1,32 +1,37 @@
-# See README.md for install and usage instructions
+''' See README.md for install and usage instructions '''
 
 import json
+from flask import Flask, request
+from flask import render_template, make_response
 import tasks
 
-from flask import Flask, request, url_for
-from flask import render_template, make_response
+APP = Flask(__name__)
 
-app = Flask(__name__)
-
-@app.route('/progress')
+@APP.route('/progress')
 def progress():
+    '''
+    Get the progress of our task and return it using a JSON object
+    '''
     jobid = request.values.get('jobid')
     if jobid:
         job = tasks.get_job(jobid)
         if job.state == 'PROGRESS':
             return json.dumps(dict(
-                state = job.state,
-                progress = job.result['current'],
+                state=job.state,
+                progress=job.result['current'],
             ))
         elif job.state == 'SUCCESS':
             return json.dumps(dict(
-                state = job.state,
-                progress = 1.0,
+                state=job.state,
+                progress=1.0,
             ))
     return '{}'
 
-@app.route('/result.png')
+@APP.route('/result.png')
 def result():
+    '''
+    Pull our generated .png binary from redis and return it
+    '''
     jobid = request.values.get('jobid')
     if jobid:
         job = tasks.get_job(jobid)
@@ -37,14 +42,20 @@ def result():
     else:
         return 404
 
-@app.route('/image_page')
+@APP.route('/image_page')
 def image_page():
+    '''
+    Enqueue the image generation task and show the webpage
+    '''
     job = tasks.get_data_from_strava.delay()
     return render_template('home.html', JOBID=job.id)
 
-@app.route('/')
+@APP.route('/')
 def index():
+    '''
+    Our web app's entry point
+    '''
     return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    APP.run(host='0.0.0.0')
