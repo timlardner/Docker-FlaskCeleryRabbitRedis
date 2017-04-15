@@ -10,4 +10,4 @@ WORKDIR /app/
 RUN pip install -r requirements.txt
 
 # create unprivileged user
-RUN adduser --disabled-password --gecos '' wj  
+RUN adduser --disabled-password --gecos '' app  

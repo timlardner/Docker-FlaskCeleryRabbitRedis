@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd WJ  
+cd app  
 
 # run Celery worker for our project myproject
-su -m wj -c "celery -A wj.celery worker --loglevel INFO	"  
+su -m app -c "celery -A tasks.celery worker --loglevel INFO"  

@@ -1,5 +1,5 @@
 #!/bin/sh
 
-cd WJ 
+cd app
 
-su -m wj -c "python wj.py"
+su -m app -c "python app.py"
