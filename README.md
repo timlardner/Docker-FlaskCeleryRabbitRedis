@@ -156,10 +156,6 @@ Next, we define the asynchronous function and move the image generation code fro
 ```python
 @CELERY.task()
 def get_data_from_strava():
-    '''
-    Generate a random image.
-    A sleep makes this task take artifically longer.
-    '''
     current_task.update_state(state='PROGRESS', meta={'current':0.1})
     time.sleep(2)
     current_task.update_state(state='PROGRESS', meta={'current':0.3})
@@ -208,6 +204,48 @@ def progress():
     return '{}'
 ```
 
+Extend our `templates/home.html` with the following Javascript code:
+
+```JavaScript
+<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+<script>
+function poll() {
+    $.ajax("{{url_for('.progress', jobid=JOBID)}}", {
+        dataType: "json"
+        , success: function(resp) {
+            if(resp.progress >= 0.99) {
+                $("#imgpl").html('<img src="result.png?jobid={{JOBID}}">');
+                return;
+            } else {
+                setTimeout(poll, 500.0);
+            }
+        }
+    });
+}
+$(function() {
+    var JOBID = "{{ JOBID }}";
+    poll();
+});
+</script>
+```
+
+The `poll` function repeatedly requires the `/progress` route of our web app and when it reports that the image has been generated, it replaces the HTML code within the placeholder with the URL of the image, which is then loaded dynamically from our modified `/result.png` route:
+
+```python
+@APP.route('/result.png')
+def result():
+    jobid = request.values.get('jobid')
+    if jobid:
+        job = tasks.get_job(jobid)
+        png_output = job.get()
+        response = make_response(png_output)
+        response.headers['Content-Type'] = 'image/png'
+        return response
+    else:
+        return 404
+```
+
+At this stage we have a working web app with asynchronous image generation.
 
 ## Part 4 - Using Docker to package our application
 
